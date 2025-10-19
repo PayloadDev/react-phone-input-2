@@ -334,24 +334,17 @@ class PhoneInput extends React.Component {
     let inputNumber = value.replace(/\D/g, '');
     let newSelectedCountry, formattedNumber;
 
-    // if new value start with selectedCountry.dialCode, format number, otherwise find newSelectedCountry
-    if (selectedCountry && startsWith(value, prefix + selectedCountry.dialCode)) {
-      formattedNumber = this.formatNumber(inputNumber, selectedCountry);
-      this.setState({ formattedNumber });
-    }
+    if (this.props.disableCountryGuess) {newSelectedCountry = selectedCountry;}
     else {
-      if (this.props.disableCountryGuess) {newSelectedCountry = selectedCountry;}
-      else {
-        newSelectedCountry = this.guessSelectedCountry(inputNumber.substring(0, 6), country, onlyCountries, hiddenAreaCodes) || selectedCountry;
-      }
-      const dialCode = newSelectedCountry && startsWith(inputNumber, prefix + newSelectedCountry.dialCode) ? newSelectedCountry.dialCode : '';
-
-      formattedNumber = this.formatNumber(
-        (this.props.disableCountryCode ? '' : dialCode) + inputNumber,
-        newSelectedCountry ? (newSelectedCountry) : undefined
-      );
-      this.setState({ selectedCountry: newSelectedCountry, formattedNumber });
+      newSelectedCountry = this.guessSelectedCountry(inputNumber.substring(0, 6), country, onlyCountries, hiddenAreaCodes) || selectedCountry;
     }
+    const dialCode = newSelectedCountry && startsWith(inputNumber, prefix + newSelectedCountry.dialCode) ? newSelectedCountry.dialCode : '';
+
+    formattedNumber = this.formatNumber(
+      (this.props.disableCountryCode ? '' : dialCode) + inputNumber,
+      newSelectedCountry ? (newSelectedCountry) : undefined
+    );
+    this.setState({ selectedCountry: newSelectedCountry, formattedNumber });
   }
 
   // View methods
